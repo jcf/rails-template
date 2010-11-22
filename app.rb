@@ -1,21 +1,30 @@
-create_file '.rvmrc', <<-RVMRC
+require 'pathname'
+
+def apply(name)
+  super "#{File.dirname(__FILE__)}/templates/#{name}.rb"
+end
+
+# Remove Rails cruft
+%w(
+  README
+  test
+  public/index.html
+  public/favicon.ico
+  public/robots.txt
+  public/images/rails.png
+).each { |path| remove_file path }
+
+# Create a sensible .rvmrc file
+create_file '.rvmrc', <<-EOS
 rvm_gemset_create_on_use_flag=1
-rvm use 1.9.2p0
+rvm use 1.9.2-p0
 rvm gemset use #{app_name}
-RVMRC
+EOS
 
-gem 'haml-rails', '>= 0.2'
-gem 'compass', '>= 0.10.5'
-gem 'compass-susy-plugin', '>= 0.8.1'
-gem 'devise', '>= 1.1.3'
-gem 'formtastic', '>= 1.2.0.beta'
-gem 'rspec-rails', '>= 2.0.1', :group => :test
-gem 'guard', '>= 0.1.5', :group => :test
-gem 'factory_girl_rails', '>= 1.0.0', :group => :test
-gem 'factory_girl_generator', '>= 0.0.1', :group => [:test, :development]
-gem 'capybara', '>= 0.3.9', :group => :test
-gem 'steak', '>= 0.4.0.a5', :group => :test
+# Add my favourite gems to Gemfile
+apply 'gems'
 
+# Use our preferred generators
 application <<-RUBY
 
     config.generators do |g|
@@ -25,51 +34,36 @@ application <<-RUBY
     end
 RUBY
 
-remove_file 'public/javascripts/controls.js'
-remove_file 'public/javascripts/dragdrop.js'
-remove_file 'public/javascripts/effects.js'
-remove_file 'public/javascripts/prototype.js'
+# Create a Haml application layout
+apply 'haml_layout'
 
-get 'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
-  'public/javascripts/jquery.js'
+apply 'application_helper'
 
-get 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js',
-  'public/javascripts/jquery-ui.js'
+# Beautiful jQuery
+apply 'jquery'
 
-# We can't use get because it won't hit SSL encrypted pages
-run 'curl --silent https://github.com/rails/jquery-ujs/raw/master/src/rails.js > public/javascripts/rails.js'
+# Postgres configuration
+apply 'database_config'
 
-gsub_file 'config/application.rb',
-  'config.action_view.javascript_expansions[:defaults] = %w()',
-  'config.action_view.javascript_expansions[:defaults] = %w(jquery.js jquery-ui.js rails.js)'
+apply 'core_extensions'
 
-remove_file 'app/views/layouts/application.html.erb'
-create_file 'app/views/layouts/application.html.haml', <<-HAML
-!!! 5
-%html
-  %head
-    %title #{app_name.humanize}
-    = stylesheet_link_tag :all
-    = javascript_include_tag :defaults
-    = csrf_meta_tag
-  %body
-    = yield
-HAML
-
+# Keep these directories even though we ignore what's in them
 create_file 'log/.gitkeep'
 create_file 'tmp/.gitkeep'
 
+run "rvm use 1.9.2-p0@#{app_name}"
+run 'bundle install'
+
+generate 'rspec:install'
+generate 'cucumber:install --capybara --rspec --spork'
+generate 'pickle --path --email'
+generate 'friendly_id'
+generate 'formtastic:install'
+generate 'devise:install'
+generate 'devise User'
+generate 'devise Admin'
+
+run 'compass init rails . -x sass --framework blueprint --sass-dir app/stylesheets --css-dir public/stylesheets'
+
 git :init
 git :add => '.'
-
-log <<-PLAIN
-
-Run the following commands to complete the setup of #{app_name.humanize}:
-
- * cd #{app_name}
- * bundle install
- * rails g rspec:install
-PLAIN
-
-# * rails g devise:install
-# * rails g devise MODEL
