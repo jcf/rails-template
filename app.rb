@@ -17,8 +17,7 @@ end
 # Create a sensible .rvmrc file
 create_file '.rvmrc', <<-EOS
 rvm_gemset_create_on_use_flag=1
-rvm use 1.9.2-p0
-rvm gemset use #{app_name}
+rvm use 1.9.2@#{app_name}
 EOS
 
 # Add my favourite gems to Gemfile
@@ -51,8 +50,8 @@ apply 'core_extensions'
 create_file 'log/.gitkeep'
 create_file 'tmp/.gitkeep'
 
-run "rvm use 1.9.2-p0@#{app_name}"
-run 'bundle install'
+run "rvm use 1.9.2@#{app_name}"
+run 'gem install bundler && bundle install'
 
 generate 'rspec:install'
 generate 'cucumber:install --capybara --rspec --spork'
@@ -63,7 +62,7 @@ generate 'devise:install'
 generate 'devise User'
 generate 'devise Admin'
 
-run 'compass init rails . -x sass --framework blueprint --sass-dir app/stylesheets --css-dir public/stylesheets'
+run 'compass init rails . -x sass --using blueprint --sass-dir app/stylesheets --css-dir public/stylesheets'
 
 git :init
 git :add => '.'
