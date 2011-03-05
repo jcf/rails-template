@@ -50,6 +50,7 @@ apply 'core_extensions'
 create_file 'log/.gitkeep'
 create_file 'tmp/.gitkeep'
 
+run "rvm gemset create #{app_name}"
 run "rvm use 1.9.2@#{app_name}"
 run 'gem install bundler && bundle install'
 
