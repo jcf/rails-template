@@ -4,7 +4,12 @@ create_file 'app/views/layouts/application.html.haml', <<-HAML
 %html
   %head
     %title #{app_name.humanize}
-    = stylesheet_link_tag :all
+
+    = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+    = stylesheet_link_tag 'print.css', :media => 'print'
+    /[if lt IE 8]
+      = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
+
     = javascript_include_tag :defaults
     = csrf_meta_tag
   %body
