@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    title <%= app_name.humanize %>
+
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag 'application'
+    = csrf_meta_tag
+
+  body
+    == yield
