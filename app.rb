@@ -1,69 +1,57 @@
-require 'pathname'
+paths = lambda { |path| File.expand_path("../#{path}", __FILE__) }
 
-def apply(name)
-  super "#{File.dirname(__FILE__)}/templates/#{name}.rb"
+def cleanup(path)
+  gsub_file path, /#.*\n/, "\n"
+  gsub_file path, /\n^\s*\n/, "\n"
 end
 
-# Remove Rails cruft
+def commit_all(message)
+  git add: '.'
+  git commit: %(-aqm "#{message}")
+end
+
+git :init
+
 %w(
   README
-  test
+  README.rdoc
+  app/assets/images/rails.png
+  app/views/layouts/application.html.erb
+  doc/README_FOR_APP
   public/index.html
-  public/favicon.ico
-  public/robots.txt
-  public/images/rails.png
+  test
 ).each { |path| remove_file path }
 
-# Create a sensible .rvmrc file
-create_file '.rvmrc', <<-EOS
-rvm_gemset_create_on_use_flag=1
-rvm use 1.9.2@#{app_name}
-EOS
+commit_all 'Initial commit'
 
-# Add my favourite gems to Gemfile
-apply 'gems'
-
-# Use our preferred generators
 application <<-RUBY
 
     config.generators do |g|
-      g.test_framework :rspec, :fixture => true, :views => false
-      g.integration_tool :rspec, :fixture => true, :views => true
-      g.fixture_replacement :factory_girl, :dir => 'spec/factories'
+      g.test_framework :rspec, routing_specs: false, views: false
     end
 RUBY
 
-# Create a Haml application layout
-apply 'haml_layout'
+commit_all 'Configure RSpec generators'
 
-apply 'application_helper'
+append_to_file 'Rakefile', <<RUBY
+task(:default).clear
+task :default => [:spec, :cucumber]
+RUBY
 
-# Beautiful jQuery
-apply 'jquery'
+commit_all 'Setup default rake task'
 
-# Postgres configuration
-apply 'database_config'
+directory paths['templates'], destination_root
+apply paths['recipes/gems.rb']
+apply paths['recipes/pg_config.rb']
 
-apply 'core_extensions'
+commit_all 'Install & configure gems'
 
-# Keep these directories even though we ignore what's in them
-create_file 'log/.gitkeep'
-create_file 'tmp/.gitkeep'
+%w(
+  Gemfile
+  config/application.rb
+  config/environments/development.rb
+  config/environments/test.rb
+  config/environments/production.rb
+).each { |path| cleanup path }
 
-run "rvm gemset create #{app_name}"
-run "rvm use 1.9.2@#{app_name}"
-run 'gem install bundler && bundle install'
-
-generate 'rspec:install'
-generate 'cucumber:install --capybara --rspec --spork'
-generate 'pickle --path --email'
-generate 'friendly_id'
-generate 'formtastic:install'
-generate 'devise:install'
-generate 'devise User'
-generate 'devise Admin'
-
-run 'compass init rails . -x sass --using blueprint --sass-dir app/stylesheets --css-dir public/stylesheets'
-
-git :init
-git :add => '.'
+commit_all 'Cleanup generated files'
