@@ -1,3 +1,6 @@
+# Prevent automatic bundle install by Rails app generator
+def run_bundle; end
+
 paths = lambda { |path| File.expand_path("../#{path}", __FILE__) }
 
 def cleanup(path)
@@ -47,6 +50,8 @@ commit_all 'Setup default rake task'
 directory paths['templates'], destination_root
 apply paths['recipes/gems.rb']
 apply paths['recipes/pg_config.rb']
+
+run 'bundle install --quiet'
 
 commit_all 'Install & configure gems'
 
