@@ -5,9 +5,13 @@ def cleanup(path)
   gsub_file path, /\n^\s*\n/, "\n"
 end
 
+# Commit all changes with given message.
+#
+# The commit operation will attempt to sign the commit using your GPG key. This
+# needs to be configured as `user.signingkey=<KEY_ID>` in your git config.
 def commit_all(message)
   git add: '.'
-  git commit: %(-aqm "#{message}")
+  git commit: %(-S -aqm "#{message}")
 end
 
 git :init
