@@ -73,5 +73,5 @@ commit_all 'Clean-up generated files' do
     config/environments/development.rb
     config/environments/test.rb
     config/environments/production.rb
-  ).each { |path| clean_up path }
+  ).each { |path| clean path }
 end
