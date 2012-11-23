@@ -1,18 +1,26 @@
 # Database & Storage
-gem 'pg'
-gem 'paranoia'
-gem 'kgio'
-gem 'dalli'
-gem 'seed-fu', '~> 2.2'
+gem 'pg',       '~> 0.14'
+gem 'paranoia', '~> 1.1'
+
+# Rails powerups
+gem 'kgio',     '~> 2.7'
+gem 'dalli',    '~> 2.5'
+gem 'seed-fu',  '~> 2.2'
+gem 'sidekiq',  '~> 2.5'
 
 # Template & View
 gem 'slim-rails', '~> 1.0'
-gem 'draper'
-gem 'kaminari'
+gem 'draper',     '~> 0.18'
+gem 'kaminari',   '~> 0.14'
+
+gem 'thin'
+
+# Monitoring & Analytics
+gem 'newrelic_rpm', '~> 3.5.2'
+gem 'rack-google-analytics', '~> 0.11'
 
 gem_group :development do
   gem 'quiet_assets'
-  gem 'thin'
 end
 
 gem_group :development, :test do
