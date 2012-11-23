@@ -1,9 +1,11 @@
 # Prevent automatic bundle install by Rails app generator
 def run_bundle; end
 
-paths = lambda { |path| File.expand_path("../#{path}", __FILE__) }
+def path(relative)
+  File.expand_path("../#{relative}", __FILE__)
+end
 
-def cleanup(path)
+def clean(path)
   gsub_file path, /#.*\n/, "\n"
   gsub_file path, /\n^\s*\n/, "\n"
 end
@@ -13,54 +15,56 @@ end
 # The commit operation will attempt to sign the commit using your GPG key. This
 # needs to be configured as `user.signingkey=<KEY_ID>` in your git config.
 def commit_all(message)
+  yield if block_given?
+
   git add: '.'
   git commit: %(-S -aqm "#{message}")
 end
 
 git :init
 
-%w(
-  README
-  README.rdoc
-  app/assets/images/rails.png
-  app/views/layouts/application.html.erb
-  doc/README_FOR_APP
-  public/index.html
-  test
-).each { |path| remove_file path }
+commit_all 'Initial commit' do
+  %w(
+    README
+    README.rdoc
+    app/assets/images/rails.png
+    app/views/layouts/application.html.erb
+    doc/README_FOR_APP
+    public/index.html
+    test
+  ).each { |path| remove_file path }
+end
 
-commit_all 'Initial commit'
-
-application <<-RUBY
+commit_all 'Configure RSpec generators' do
+  application <<-RUBY
 
     config.generators do |g|
       g.test_framework :rspec, routing_specs: false, views: false
     end
-RUBY
+  RUBY
+end
 
-commit_all 'Configure RSpec generators'
+commit_all 'Setup default rake task' do
+  append_to_file 'Rakefile', <<-RUBY.gsub(/^\s+/, '')
+    task(:default).clear
+    task :default => [:spec, :cucumber]
+  RUBY
+end
 
-append_to_file 'Rakefile', <<RUBY
-task(:default).clear
-task :default => [:spec, :cucumber]
-RUBY
+commit_all 'Install & configure gems' do
+  directory path('templates'), destination_root
+  apply path('recipes/gems.rb')
+  apply path('recipes/pg_config.rb')
 
-commit_all 'Setup default rake task'
+  run 'bundle install --quiet'
+end
 
-directory paths['templates'], destination_root
-apply paths['recipes/gems.rb']
-apply paths['recipes/pg_config.rb']
-
-run 'bundle install --quiet'
-
-commit_all 'Install & configure gems'
-
-%w(
-  Gemfile
-  config/application.rb
-  config/environments/development.rb
-  config/environments/test.rb
-  config/environments/production.rb
-).each { |path| cleanup path }
-
-commit_all 'Cleanup generated files'
+commit_all 'Clean-up generated files' do
+  %w(
+    Gemfile
+    config/application.rb
+    config/environments/development.rb
+    config/environments/test.rb
+    config/environments/production.rb
+  ).each { |path| clean_up path }
+end
