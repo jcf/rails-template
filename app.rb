@@ -44,6 +44,13 @@ commit_all 'Configure RSpec generators' do
   RUBY
 end
 
+if ua = ENV['GA_TRACKER']
+  commit_all 'Configure Rack Google Analytics' do
+    environment "config.middleware.use Rack::GoogleAnalytics, tracker: '#{ua}'",
+      env: :production
+  end
+end
+
 commit_all 'Setup default rake task' do
   append_to_file 'Rakefile', <<-RUBY.gsub(/^\s+/, '')
     task(:default).clear
