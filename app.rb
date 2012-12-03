@@ -73,6 +73,10 @@ commit_all 'Setup authentication' do
   apply path('recipes/authentication.rb')
 end
 
+if system 'gem which zeus &>/dev/null'
+  commit_all('Bootstrap zeus') { run 'zeus init' }
+end
+
 commit_all 'Clean-up generated files' do
   %w(
     Gemfile
