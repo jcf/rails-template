@@ -1,0 +1,12 @@
+module <%= app_name.classify %>
+  class Settings < Hashr
+    extend Hashr::EnvDefaults
+
+    define \
+      name: "<%= app_name.classify %>"
+  end
+
+  def self.settings
+    @settings ||= Settings.new
+  end
+end

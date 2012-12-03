@@ -7,6 +7,7 @@ gem 'kgio',     '~> 2.7'
 gem 'dalli',    '~> 2.5'
 gem 'seed-fu',  '~> 2.2'
 gem 'sidekiq',  '~> 2.5'
+gem 'hashr', '~> 0'
 
 # Template & View
 gem 'slim-rails', '~> 1.0'
