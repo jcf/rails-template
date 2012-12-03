@@ -35,10 +35,3 @@ gem_group :test do
   gem 'poltergeist'
   gem 'shoulda-matchers'
 end
-
-gem_group :extras do
-  gem 'guard-bundler'
-  gem 'guard-rspec'
-  gem 'guard-cucumber'
-  gem 'rb-readline'
-end
