@@ -60,10 +60,17 @@ end
 
 commit_all 'Install & configure gems' do
   directory path('templates'), destination_root
+
   apply path('recipes/gems.rb')
   apply path('recipes/pg_config.rb')
 
   run 'bundle install --quiet'
+end
+
+rake 'db:create:all'
+
+commit_all 'Setup authentication' do
+  apply path('recipes/authentication.rb')
 end
 
 commit_all 'Clean-up generated files' do

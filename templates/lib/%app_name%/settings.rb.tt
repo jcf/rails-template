@@ -2,8 +2,11 @@ module <%= app_name.classify %>
   class Settings < Hashr
     extend Hashr::EnvDefaults
 
+    HOST = 'localhost:3000'
+
     define \
-      name: "<%= app_name.classify %>"
+      name: '<%= app_name.classify %>',
+      host: HOST
   end
 
   def self.settings
