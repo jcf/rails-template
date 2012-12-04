@@ -3,12 +3,13 @@ gem 'pg',       '~> 0.14'
 gem 'paranoia', '~> 1.1'
 
 # Rails powerups
-gem 'devise',   '~> 2.1'
-gem 'kgio',     '~> 2.7'
-gem 'dalli',    '~> 2.5'
-gem 'seed-fu',  '~> 2.2'
-gem 'sidekiq',  '~> 2.5'
-gem 'hashr', '~> 0'
+gem 'devise',    '~> 2.1'
+gem 'kgio',      '~> 2.7'
+gem 'dalli',     '~> 2.5'
+gem 'seed-fu',   '~> 2.2'
+gem 'sidekiq',   '~> 2.5'
+gem 'pry-rails', '~> 0.2'
+gem 'hashr',     '~> 0'
 
 # Template & View
 gem 'slim-rails', '~> 1.0'
