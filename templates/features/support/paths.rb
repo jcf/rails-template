@@ -1,6 +1,6 @@
 module PathHelpers
-  def path_to(page)
-    case page
+  def path_to(page_name)
+    case page_name
     when /home ?page$/
       root_path
 
