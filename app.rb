@@ -18,7 +18,7 @@ def commit_all(message)
   yield if block_given?
 
   git add: '.'
-  git commit: %(-S -aqm "#{message}")
+  git commit: %(-aqm "#{message}")
 end
 
 git :init
