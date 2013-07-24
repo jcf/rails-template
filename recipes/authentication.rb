@@ -6,7 +6,9 @@ application "config.assets.initialize_on_precompile = false"
 
 # This is done here to ensure the require is done before any other config.
 inject_into_file 'config/application.rb', after: "  class Application < Rails::Application\n" do
-  "    require '#{app_name}/settings'\n"
+  [ "    config.before_initialize do",
+    "      config.settings = #{app_name.classify}::Config.new",
+    "    end" ].join('\n')
 end
 
 route "root to: 'home#index'"
