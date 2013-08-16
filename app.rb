@@ -10,10 +10,6 @@ def clean(path)
   gsub_file path, /\n^\s*\n/, "\n"
 end
 
-# Commit all changes with given message.
-#
-# The commit operation will attempt to sign the commit using your GPG key. This
-# needs to be configured as `user.signingkey=<KEY_ID>` in your git config.
 def commit_all(message)
   yield if block_given?
 
@@ -33,15 +29,6 @@ commit_all 'Initial commit' do
     public/index.html
     test
   ).each { |path| remove_file path }
-end
-
-commit_all 'Configure RSpec generators' do
-  application <<-RUBY
-
-    config.generators do |g|
-      g.test_framework :rspec, routing_specs: false, views: false
-    end
-  RUBY
 end
 
 if ua = ENV['GA_TRACKER']

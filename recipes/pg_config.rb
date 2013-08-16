@@ -8,7 +8,7 @@ development: &dev
   encoding: unicode
   database: #{app_name}_development
   pool: 5
-  username: <%= ENV['USER'] %>
+  username: <%= ENV['USER'].to_s.strip %>
   password:
 
 test:
