@@ -1,40 +1,36 @@
 # Database & Storage
-gem 'pg',       '~> 0.14'
-gem 'paranoia', '~> 1.1'
+gem 'pg',       '~> 0.16'
 
 # Rails powerups
-gem 'devise',    '~> 2.1'
-gem 'kgio',      '~> 2.7'
-gem 'dalli',     '~> 2.5'
-gem 'seed-fu',   '~> 2.2'
-gem 'sidekiq',   '~> 2.5'
-gem 'pry-rails', '~> 0.2'
-gem 'hashr',     '~> 0'
+gem 'devise',    '~> 3.0.0.rc'
+gem 'kgio',      '~> 2.8.0'
+gem 'dalli',     '~> 2.6.4'
+gem 'pry-rails', '~> 0.3.2'
+gem 'hashr',     '~> 0.0.22'
 
 # Template & View
-gem 'slim-rails', '~> 1.0'
-gem 'draper',     '~> 0.18'
-gem 'kaminari',   '~> 0.14'
+gem 'slim-rails', '~> 2.0'
+gem 'draper',     '~> 1.2.1'
+gem 'kaminari',   '~> 0.14.1'
 
-gem 'thin'
+gem 'puma', '~> 2.5.1'
 
 # Monitoring & Analytics
-gem 'newrelic_rpm', '~> 3.5.2'
-gem 'rack-google-analytics', '~> 0.11'
+gem 'newrelic_rpm', '~> 3.6'
+gem 'rack-google-analytics', '~> 0.12.0'
 
 gem_group :development do
-  gem 'quiet_assets'
+  gem 'quiet_assets', '~> 1.0.2'
 end
 
 gem_group :development, :test do
-  gem 'rspec-rails', '~> 2.11'
+  gem 'rspec-rails', '~> 2.14.0'
 end
 
 gem_group :test do
-  gem 'cucumber-rails', '~> 1.3', require: false
-  gem 'database_cleaner'
-  gem 'machinist'
-  gem 'pickle'
-  gem 'poltergeist'
-  gem 'shoulda-matchers'
+  gem 'cucumber-rails', '~> 1.3'
+  gem 'database_cleaner', '~> 1.1.1'
+  gem 'factory_girl', '~> 4.2.0'
+  gem 'poltergeist', '~> 1.3.0'
+  gem 'shoulda-matchers', '~> 2.3.0'
 end
